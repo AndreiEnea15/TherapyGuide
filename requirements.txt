@@ -1,5 +1,2 @@
-streamlit>=1.36
-pandas
-datetime
-regex
+streamlit==1.28.0
 streamlit-option-menu==0.3.2
