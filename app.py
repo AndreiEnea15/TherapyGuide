@@ -1,7 +1,7 @@
 import streamlit as st
 from datetime import datetime
 import re
-from streamlit_option_menu import option_menu  # Added for proper icons
+from streamlit_option_menu import option_menu
 
 # Page configuration
 st.set_page_config(
@@ -42,7 +42,7 @@ st.markdown("""
     /* GLOBAL STYLES */
     * { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important; }
     
-    /* PAGE BACKGROUND - SOFT GREEN - VERY AGGRESSIVE */
+    /* PAGE BACKGROUND */
     html, body, .main, 
     .stApp, 
     [data-testid="stAppViewContainer"],
@@ -62,7 +62,7 @@ st.markdown("""
     h3 { font-size: 1.25rem !important; margin-bottom: 0.75rem !important; }
     p, li { line-height: 1.6 !important; color: var(--text-primary) !important; }
     
-    /* SIDEBAR STYLING - DARKER DISTINCTIVE BACKGROUND */
+    /* SIDEBAR STYLING */
     section[data-testid="stSidebar"],
     section[data-testid="stSidebar"] > div,
     [data-testid="stSidebar"],
@@ -71,51 +71,15 @@ st.markdown("""
         background: #E8EDE9 !important;
         border-right: 2px solid var(--border-light) !important; 
     }
-    section[data-testid="stSidebar"] > div { 
-        padding-top: 2rem !important; 
-    }
+    section[data-testid="stSidebar"] > div { padding-top: 2rem !important; }
     section[data-testid="stSidebar"] h1 { 
         font-size: 1.25rem !important; 
         color: var(--primary-darker) !important; 
         margin-bottom: 1.5rem !important;
         font-weight: 600 !important;
     }
-    section[data-testid="stSidebar"] .stMarkdown { 
-        margin-bottom: 0.5rem !important; 
-    }
     
-    /* FIX WHITE TOP AREA - MORE AGGRESSIVE */
-    header[data-testid="stHeader"],
-    [data-testid="stHeader"],
-    .stApp > header,
-    div[data-testid="stToolbar"],
-    div[data-testid="stDecoration"],
-    div[data-testid="stStatusWidget"],
-    iframe[title="streamlit_option_menu.option_menu"],
-    .css-1dp5vir,
-    .appview-container,
-    div[class*="stApp"] > header {
-        background-color: #F0F4F2 !important;
-        background: #F0F4F2 !important;
-    }
-    
-    /* HIDE/FIX STREAMLIT HEADER */
-    header[data-testid="stHeader"] {
-        background-color: #F0F4F2 !important;
-        background: #F0F4F2 !important;
-    }
-    header[data-testid="stHeader"]::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 100%;
-        background-color: #F0F4F2 !important;
-        z-index: -1;
-    }
-    
-    /* BUTTONS - COMPREHENSIVE STYLING */
+    /* BUTTONS */
     .stButton > button, button {
         background-color: var(--primary) !important;
         color: #FFFFFF !important;
@@ -129,15 +93,13 @@ st.markdown("""
         box-shadow: 0 1px 3px rgba(106,140,126,0.08) !important;
         width: auto !important;
     }
-    .stButton button *, .stButton button span, .stButton button div, .stButton button p { color: #FFFFFF !important; }
+    .stButton button * { color: #FFFFFF !important; }
     .stButton > button:hover {
         background-color: var(--primary-dark) !important;
         border-color: var(--primary-dark) !important;
         box-shadow: 0 2px 8px rgba(106,140,126,0.15) !important;
         transform: translateY(-1px) !important;
     }
-    .stButton > button:active { background-color: var(--primary-darker) !important; transform: translateY(0) !important; }
-    .stButton > button:focus { outline: 2px solid var(--primary-light) !important; outline-offset: 2px !important; }
     
     /* INPUT FIELDS */
     .stTextInput > div > div > input,
@@ -152,52 +114,60 @@ st.markdown("""
         font-size: 0.9375rem !important;
         transition: all 0.2s ease !important;
     }
-    .stTextInput > div > div > input::placeholder,
-    .stTextArea > div > div > textarea::placeholder { color: var(--text-muted) !important; opacity: 0.7 !important; }
     .stTextInput > div > div > input:focus,
-    .stTextArea > div > div > textarea:focus,
-    .stSelectbox > div > div > select:focus,
-    .stNumberInput > div > div > input:focus {
+    .stTextArea > div > div > textarea:focus {
         border: 2px solid var(--primary) !important;
         box-shadow: 0 0 0 3px rgba(106,140,126,0.1) !important;
         outline: none !important;
     }
     
-    /* CARDS & CONTAINERS */
-    .element-container, [data-testid="stVerticalBlock"] > div {
-        background-color: transparent !important;
-    }
-    div[data-testid="stContainer"],
-    div[data-testid="column"] > div {
-        background-color: var(--bg-card) !important;
-        border: 1px solid var(--border-light) !important;
+    /* ALERTS & MESSAGES - FIXED TO PREVENT MULTIPLE BORDERS */
+    .stSuccess, .stInfo, .stWarning {
         border-radius: 8px !important;
-        padding: 1.25rem !important;
-        margin-bottom: 1rem !important;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.04) !important;
+        padding: 1rem 1.25rem !important;
+        border-left: 4px solid !important;
+        margin: 1rem 0 !important;
+    }
+    .stSuccess { background-color: rgba(106,140,126,0.1) !important; border-left-color: var(--success) !important; }
+    .stInfo { background-color: rgba(122,156,184,0.1) !important; border-left-color: var(--info) !important; }
+    .stWarning { background-color: rgba(196,160,85,0.1) !important; border-left-color: var(--warning) !important; }
+    
+    /* ERROR MESSAGES - SINGLE BORDER ONLY */
+    /* Reset parent containers */
+    .stAlert,
+    .stError, 
+    div.stAlert,
+    div.stError,
+    div[data-testid="stNotification"] { 
+        border: none !important;
+        border-left: none !important;
+        background-color: transparent !important;
+        background: transparent !important;
+        padding: 0 !important;
+        margin: 0 !important;
     }
     
-    /* EXPANDERS */
-    .streamlit-expanderHeader {
-        background-color: var(--bg-card) !important;
-        border: 1px solid var(--border-light) !important;
-        border-radius: 6px !important;
-        padding: 0.875rem 1rem !important;
-        font-weight: 500 !important;
-        color: var(--primary-darker) !important;
-        transition: all 0.2s ease !important;
+    /* Apply styling ONLY to innermost child */
+    .stAlert > div:first-child,
+    .stError > div:first-child,
+    div.stAlert > div:first-child,
+    div.stError > div:first-child,
+    div[data-testid="stNotification"] > div:first-child { 
+        background-color: #E8F0ED !important; 
+        background: #E8F0ED !important;
+        border: 1px solid #D8E4DD !important;
+        border-left: 5px solid #C4A055 !important; 
+        border-radius: 8px !important;
+        color: #4A5C54 !important; 
+        padding: 1rem 1.25rem !important;
+        margin: 1rem 0 !important;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05) !important;
     }
-    .streamlit-expanderHeader:hover {
-        background-color: var(--bg-hover) !important;
-        border-color: var(--primary-light) !important;
-    }
-    .streamlit-expanderContent {
-        background-color: var(--bg-card) !important;
-        border: 1px solid var(--border-light) !important;
-        border-top: none !important;
-        border-radius: 0 0 6px 6px !important;
-        padding: 1rem !important;
-    }
+    
+    /* Error message text */
+    .stError *, .stAlert * { color: #4A5C54 !important; }
+    .stError svg, .stAlert svg { color: #C4A055 !important; fill: #C4A055 !important; }
+    .stError strong, .stError b { color: #3A4C44 !important; font-weight: 600 !important; }
     
     /* TABS */
     .stTabs [data-baseweb="tab-list"] {
@@ -214,88 +184,10 @@ st.markdown("""
         border-radius: 6px 6px 0 0 !important;
         transition: all 0.2s ease !important;
     }
-    .stTabs [data-baseweb="tab"]:hover {
-        background-color: var(--bg-hover) !important;
-        color: var(--primary) !important;
-    }
     .stTabs [data-baseweb="tab"][aria-selected="true"] {
         background-color: var(--bg-card) !important;
         color: var(--primary) !important;
         border-bottom: 3px solid var(--primary) !important;
-    }
-    .stTabs [data-baseweb="tab-panel"] {
-        background-color: var(--bg-card) !important;
-        border: 1px solid var(--border-light) !important;
-        border-top: none !important;
-        border-radius: 0 6px 6px 6px !important;
-        padding: 1.5rem !important;
-    }
-    
-    /* ALERTS & MESSAGES */
-    .stSuccess, .stInfo, .stWarning, .stError {
-        border-radius: 8px !important;
-        padding: 1rem 1.25rem !important;
-        border-left: 4px solid !important;
-        margin: 1rem 0 !important;
-    }
-    .stSuccess { background-color: rgba(106,140,126,0.1) !important; border-left-color: var(--success) !important; }
-    .stInfo { background-color: rgba(122,156,184,0.1) !important; border-left-color: var(--info) !important; }
-    .stWarning { background-color: rgba(196,160,85,0.1) !important; border-left-color: var(--warning) !important; }
-    
-    /* ERROR MESSAGES - LIGHT SAGE GREEN - SUPER AGGRESSIVE OVERRIDE */
-    .stAlert,
-    .stError, 
-    .stException,
-    div.stAlert,
-    div.stError,
-    div[data-testid="stException"],
-    div[data-testid="stNotification"],
-    div[data-baseweb="notification"],
-    [class*="stAlert"],
-    [class*="stError"],
-    [data-testid*="Exception"],
-    [data-testid*="error"] { 
-        background-color: #E8F0ED !important; 
-        background: #E8F0ED !important;
-        border: 1px solid #D8E4DD !important;
-        border-left: 5px solid #C4A055 !important; 
-        border-radius: 8px !important;
-        color: #4A5C54 !important; 
-        padding: 1rem 1.25rem !important;
-        margin: 1rem 0 !important;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.05) !important;
-    }
-    
-    /* Error message icons */
-    .stError svg,
-    .stAlert svg,
-    .stException svg,
-    div.stError svg,
-    [class*="stError"] svg,
-    [class*="stAlert"] svg { 
-        color: #C4A055 !important; 
-        fill: #C4A055 !important;
-    }
-    
-    /* Error message text */
-    .stError *,
-    .stAlert *,
-    .stException *,
-    div.stError *,
-    [class*="stError"] *,
-    [class*="stAlert"] * {
-        color: #4A5C54 !important;
-    }
-    
-    /* Error message bold text */
-    .stError strong,
-    .stError b,
-    .stAlert strong,
-    .stAlert b,
-    div.stError strong,
-    div.stError b { 
-        color: #3A4C44 !important; 
-        font-weight: 600 !important;
     }
     
     /* CHAT MESSAGES */
@@ -306,90 +198,12 @@ st.markdown("""
         padding: 1rem !important;
         margin-bottom: 0.75rem !important;
     }
-    [data-testid="stChatMessageContent"] { color: var(--text-primary) !important; }
-    
-    /* SELECTBOX DROPDOWN */
-    .stSelectbox > div > div > div { background-color: var(--bg-card) !important; }
-    
-    /* DIVIDERS */
-    hr { border-color: var(--border-light) !important; margin: 1.5rem 0 !important; }
     
     /* LINKS */
     a { color: var(--primary) !important; text-decoration: none !important; font-weight: 500 !important; }
     a:hover { color: var(--primary-dark) !important; text-decoration: underline !important; }
     
-    /* PROGRESS & METRICS */
-    [data-testid="stMetricValue"] { color: var(--primary-darker) !important; font-weight: 600 !important; }
-    [data-testid="stMetricLabel"] { color: var(--text-secondary) !important; }
-    
-    /* MARKDOWN CONTENT */
-    .stMarkdown strong, .stMarkdown b { color: var(--primary-darker) !important; font-weight: 600 !important; }
-    .stMarkdown em, .stMarkdown i { color: var(--text-secondary) !important; }
-    .stMarkdown code {
-        background-color: var(--bg-hover) !important;
-        color: var(--primary-darker) !important;
-        padding: 0.125rem 0.375rem !important;
-        border-radius: 4px !important;
-        font-size: 0.875em !important;
-    }
-    
-    /* LISTS */
-    .stMarkdown ul, .stMarkdown ol { padding-left: 1.5rem !important; margin: 0.5rem 0 !important; }
-    .stMarkdown li { margin: 0.375rem 0 !important; color: var(--text-primary) !important; }
-    
-    /* SCROLLBAR STYLING */
-    ::-webkit-scrollbar { width: 8px !important; height: 8px !important; }
-    ::-webkit-scrollbar-track { background: var(--bg-primary) !important; }
-    ::-webkit-scrollbar-thumb {
-        background: var(--secondary-light) !important;
-        border-radius: 4px !important;
-    }
-    ::-webkit-scrollbar-thumb:hover { background: var(--secondary) !important; }
-    
-    /* CHAT INPUT */
-    .stChatInput > div > div > div > input {
-        background-color: var(--bg-card) !important;
-        border: 1.5px solid var(--border-light) !important;
-        border-radius: 24px !important;
-        padding: 0.75rem 1.25rem !important;
-        font-size: 0.9375rem !important;
-    }
-    .stChatInput > div > div > div > input:focus {
-        border: 2px solid var(--primary) !important;
-        box-shadow: 0 0 0 3px rgba(106,140,126,0.1) !important;
-    }
-    
-    /* LOADING SPINNER */
-    .stSpinner > div { border-top-color: var(--primary) !important; }
-    
-    /* ADDITIONAL ERROR MESSAGE OVERRIDES - ENSURE LIGHT SAGE GREEN APPLIES */
-    div.stAlert.stError,
-    div[data-testid="stNotificationContentError"],
-    div[data-baseweb="notification"][kind="error"],
-    [class*="stAlert"][class*="error"] {
-        background-color: #E8F0ED !important;
-        background: #E8F0ED !important;
-        border: 1px solid #D8E4DD !important;
-        border-left: 5px solid #C4A055 !important;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.05) !important;
-    }
-    div.stAlert.stError > div,
-    div[data-testid="stNotificationContentError"] > div {
-        background-color: #E8F0ED !important;
-        background: #E8F0ED !important;
-    }
-    .stAlert.stError p, .stAlert.stError div, .stAlert.stError span {
-        color: #4A5C54 !important;
-    }
-    
-    /* FORCE LEFT BORDER ON ERROR PARENT CONTAINERS */
-    div[data-testid="stNotification"],
-    div[class*="Alert"],
-    div[class*="Error"] {
-        border-left: 5px solid #C4A055 !important;
-    }
-
-    /* OPTION MENU STYLING - FIX STYLING ISSUES */
+    /* OPTION MENU STYLING */
     .nav-link {
         text-align: left !important;
         padding: 0.5rem 1rem !important;
@@ -412,15 +226,12 @@ st.markdown("""
 class TherapyBotGuide:
     def __init__(self):
         """Initialize the bot with all its knowledge and capabilities"""
-
-        # Crisis detection words
         self.crisis_words = [
             'suicide', 'kill myself', 'end my life', 'want to die',
             'hurt myself', 'overdose', 'can\'t go on', 'ending it all',
             'better off dead', 'no point living'
         ]
 
-        # Therapy knowledge database
         self.therapy_types = {
             'CBT': {
                 'name': 'Cognitive Behavioral Therapy (CBT)',
@@ -514,7 +325,6 @@ class TherapyBotGuide:
             }
         }
 
-        # Assessment questions
         self.assessment_questions = [
             "What's been bothering you lately? (Describe your main concerns)",
             "How long have you been feeling this way?",
@@ -524,7 +334,6 @@ class TherapyBotGuide:
             "Do you have health insurance or need low-cost options?"
         ]
 
-        # Professional resources
         self.professional_resources = {
             'Psychology_Today': {
                 'website': 'psychologytoday.com/us/therapists',
@@ -576,7 +385,6 @@ class TherapyBotGuide:
         """Check if someone is in immediate danger"""
         if not user_message:
             return False
-
         message_lower = user_message.lower()
         for crisis_word in self.crisis_words:
             if crisis_word in message_lower:
@@ -599,63 +407,30 @@ class TherapyBotGuide:
         """
 
     def find_best_therapy(self, user_problems):
-        """
-        Figure out which therapy might help based on user's problems.
-        
-        IMPROVED ALGORITHM with flexible keyword matching:
-        - Exact phrase match = 2 points (higher value)
-        - Individual word match = 1 point (handles variations)
-        - Avoids false positives with word length filter (> 2 chars)
-        
-        EXAMPLE:
-        User says: "I'm anxious, overthinking, and stressed about my breakup"
-        
-        For CBT therapy with keywords ["anxiety", "breakup", "stress", ...]:
-        - "anxiety" found in "anxious" → +1 point
-        - "breakup" exact match → +2 points
-        - "stress" found in "stressed" → +1 point
-        Total CBT: 4+ points
-        
-        Returns: (best_therapy_name, therapy_scores_dict)
-        """
+        """Find the best therapy type based on user's problems"""
         therapy_scores = {}
-
-        # Start all therapy types with 0 points
         for therapy_name in self.therapy_types:
             therapy_scores[therapy_name] = 0
 
-        # Convert user problems to lowercase for easier matching
         user_text = ' '.join(user_problems).lower()
-        
-        # Split user text into individual words for flexible matching
-        # Example: "I'm anxious and stressed" → {"i'm", "anxious", "and", "stressed", ...}
         user_words = set(user_text.split())
 
-        # Check each therapy type for matches
         for therapy_name, therapy_info in self.therapy_types.items():
             for keyword in therapy_info['good_for']:
                 keyword_lower = keyword.lower()
-                
-                # STEP 1: Try exact phrase match first - HIGHER VALUE
-                # Example: if user said "negative thoughts", this matches exactly
                 if keyword_lower in user_text:
-                    therapy_scores[therapy_name] += 2  # Exact match gets 2 points
+                    therapy_scores[therapy_name] += 2
                 else:
-                    # STEP 2: Try individual word matches from multi-word keywords
-                    # Example: keyword "negative thoughts" → split into ["negative", "thoughts"]
                     keyword_words = keyword_lower.split()
                     for word in keyword_words:
-                        # Only match words > 2 chars (avoids false positives from "is", "it", etc)
-                        # Example: "anxious" matches part of keyword "anxiety"
                         if len(word) > 2 and word in user_words:
-                            therapy_scores[therapy_name] += 1  # Partial match gets 1 point
-                            break  # Count once per keyword
+                            therapy_scores[therapy_name] += 1
+                            break
 
-        # Find the therapy type with the most points
         if max(therapy_scores.values()) > 0:
             best_therapy = max(therapy_scores, key=therapy_scores.get)
         else:
-            best_therapy = 'CBT'  # Default recommendation if no matches
+            best_therapy = 'CBT'
 
         return best_therapy, therapy_scores
 
@@ -664,21 +439,15 @@ class TherapyBotGuide:
         recommended_resources = []
         user_text = ' '.join(user_preferences).lower()
 
-        # Online preference
         if 'online' in user_text:
             recommended_resources.extend(['BetterHelp', 'Talkspace'])
 
-        # Cost considerations
         if any(word in user_text for word in ['cost', 'money', 'affordable', 'cheap', 'low-cost', 'sliding scale']):
             recommended_resources.append('Open_Path')
 
-        # Always include Psychology Today and SAMHSA
         recommended_resources.extend(['Psychology_Today', 'SAMHSA'])
-
-        # Add crisis support
         recommended_resources.append('Crisis_Text_Line')
 
-        # Remove duplicates while preserving order
         seen = set()
         final_resources = []
         for resource in recommended_resources:
@@ -690,12 +459,9 @@ class TherapyBotGuide:
 
 def main():
     """Main Streamlit application"""
-
-    # Initialize bot with error handling
     if 'bot' not in st.session_state:
         try:
             st.session_state.bot = TherapyBotGuide()
-            # Verify the bot has the required method
             if not hasattr(st.session_state.bot, 'find_best_therapy'):
                 st.error("⚠️ Bot initialization error: find_best_therapy method missing")
                 st.stop()
@@ -703,7 +469,6 @@ def main():
             st.error(f"⚠️ Error initializing bot: {str(e)}")
             st.stop()
 
-    # Initialize session state
     if 'current_question' not in st.session_state:
         st.session_state.current_question = 0
     if 'user_answers' not in st.session_state:
@@ -713,23 +478,16 @@ def main():
     if 'show_results' not in st.session_state:
         st.session_state.show_results = False
 
-    # Header
     st.title("🌱 Therapy Guide")
     st.markdown("**Your Personal Mental Health Resource Finder**")
-
-    # Important disclaimer
     st.error("⚠️ **IMPORTANT:** This tool is for educational purposes only and is not a replacement for professional mental health care. If you're in crisis, please seek immediate help.")
 
-    # Sidebar with navigation
     st.sidebar.title("Navigation")
-
-    # Crisis button (always visible)
     if st.sidebar.button("⚠️ Crisis Help - Get Help Now"):
         st.error(st.session_state.bot.get_crisis_help())
 
     st.sidebar.markdown("---")
     
-    # Debug / Clear session button
     with st.sidebar.expander("⚙️ Troubleshooting"):
         st.write("Having issues? Try clearing the session:")
         if st.button("🗑️ Clear Session & Restart"):
@@ -737,7 +495,6 @@ def main():
                 del st.session_state[key]
             st.rerun()
 
-    # Main navigation with option_menu for proper icons
     if not st.session_state.assessment_started:
         with st.sidebar:
             selected = option_menu(
@@ -762,7 +519,6 @@ def main():
                 }
             )
         
-        # Show the selected page
         if selected == "Home":
             show_home_page()
         elif selected == "Crisis Resources":
@@ -772,7 +528,6 @@ def main():
         elif selected == "Find Resources":
             show_resources_page()
     else:
-        # Assessment is active
         st.sidebar.write("✍️ **Assessment in Progress**")
         if st.sidebar.button("↻ Start Over"):
             st.session_state.assessment_started = False
@@ -789,7 +544,6 @@ def main():
 def show_home_page():
     """Show the home page"""
     st.header("Welcome! How can I help you today?")
-
     col1, col2 = st.columns(2)
 
     with col1:
@@ -801,7 +555,6 @@ def show_home_page():
         - **Provides** crisis support information
         - **Educates** about different therapy options
         """)
-
         if st.button("✍️ Start Assessment", type="primary"):
             st.session_state.assessment_started = True
             st.session_state.current_question = 0
@@ -817,14 +570,11 @@ def show_home_page():
         - **Text HOME to 741741** (Crisis Text Line)
         - **Call 911** for emergency services
         """)
-
         if st.button("🆘 Get Crisis Resources"):
             st.error(st.session_state.bot.get_crisis_help())
 
-    # Statistics and info
     st.markdown("---")
     st.subheader("📌 Mental Health Facts")
-
     col1, col2, col3 = st.columns(3)
     with col1:
         st.metric("Adults with Mental Illness", "1 in 5", "In the US annually")
@@ -834,70 +584,43 @@ def show_home_page():
         st.metric("Crisis Line Response", "24/7", "Available support")
 
 def show_assessment_page():
-    """
-    Show the assessment questionnaire in a chat-like format.
-    
-    INTERFACE DESIGN:
-    ✅ Questions appear one per row in natural conversation flow
-    ✅ Previous Q&A pairs remain visible for context and continuity
-    ✅ Chat input at bottom for natural, intuitive interaction
-    ✅ Automatic progression to next question (no buttons needed)
-    
-    This creates a better UX than traditional forms with Next/Previous buttons.
-    Users experience it like a real conversation with the bot.
-    """
+    """Show the assessment questionnaire"""
     st.header("✍️ Mental Health Assessment")
     st.write("Please answer these questions honestly. Your responses will help me recommend appropriate resources.")
 
-    # Progress bar
     progress = st.session_state.current_question / len(st.session_state.bot.assessment_questions)
     st.progress(progress)
     st.write(f"Question {st.session_state.current_question + 1} of {len(st.session_state.bot.assessment_questions)}")
-    
     st.markdown("---")
 
-    # Show assessment in progress
     if st.session_state.current_question < len(st.session_state.bot.assessment_questions):
-        # Display chat history (previous questions and answers)
-        # This maintains conversation context as user progresses through questions
         for i in range(st.session_state.current_question):
             question = st.session_state.bot.assessment_questions[i]
             answer = st.session_state.user_answers[i] if i < len(st.session_state.user_answers) else ""
-            
-            # Show previous questions as bot messages
             with st.chat_message("assistant"):
                 st.write(question)
-            # Show previous answers as user messages
             with st.chat_message("user"):
                 st.write(answer)
         
-        # Current question - the one user needs to answer now
         current_question = st.session_state.bot.assessment_questions[st.session_state.current_question]
         with st.chat_message("assistant"):
             st.write(current_question)
         
-        # Chat input for current question
-        # Using st.chat_input for natural messaging experience
         user_input = st.chat_input("Your answer...", key=f"q_{st.session_state.current_question}")
         
         if user_input:
-            # Check for crisis indicators in user's response
             if st.session_state.bot.check_for_crisis(user_input):
                 st.error(st.session_state.bot.get_crisis_help())
                 return
             
-            # Save answer to session state
             if len(st.session_state.user_answers) <= st.session_state.current_question:
                 st.session_state.user_answers.append(user_input)
             else:
                 st.session_state.user_answers[st.session_state.current_question] = user_input
             
-            # Move to next question
             st.session_state.current_question += 1
             st.rerun()
-
     else:
-        # Assessment complete - show results
         st.session_state.show_results = True
         st.rerun()
 
@@ -906,9 +629,7 @@ def show_assessment_results():
     st.success("✓ Assessment Complete!")
     st.header("📋 Your Personalized Recommendations")
 
-    # Find best therapy type with error handling
     try:
-        # Verify bot object exists and has the method
         if not hasattr(st.session_state, 'bot'):
             st.error("⚠️ Error: Bot not initialized. Please refresh the page.")
             if st.button("↻ Refresh Page"):
@@ -917,8 +638,6 @@ def show_assessment_results():
             
         if not hasattr(st.session_state.bot, 'find_best_therapy'):
             st.error("⚠️ Error: Bot is missing required methods. Please refresh the page.")
-            st.write(f"Bot type: {type(st.session_state.bot)}")
-            st.write(f"Bot methods: {[m for m in dir(st.session_state.bot) if not m.startswith('_')]}")
             if st.button("↻ Refresh Page"):
                 st.rerun()
             return
@@ -927,15 +646,11 @@ def show_assessment_results():
         therapy_info = st.session_state.bot.therapy_types[best_therapy]
     except Exception as e:
         st.error(f"⚠️ Error generating recommendations: {str(e)}")
-        st.write("**Debug info:**")
-        st.write(f"- Error type: {type(e).__name__}")
-        st.write(f"- User answers: {len(st.session_state.user_answers)} answers")
         if st.button("↻ Try Again"):
             st.session_state.show_results = False
             st.rerun()
         return
 
-    # Therapy recommendation
     st.subheader("⭐ Recommended Therapy Type")
     with st.container():
         st.markdown(f"### {therapy_info['name']}")
@@ -944,26 +659,16 @@ def show_assessment_results():
         st.write(f"**Typical duration:** {therapy_info['duration']}")
         st.write(f"**Effectiveness:** {therapy_info['effectiveness']}")
 
-    # Show all therapy scores
     with st.expander("📈 See how other therapies scored for you"):
         st.write("**Your therapy scores:** (sorted from highest to lowest)")
-        
-        # Sort scores in descending order to show best matches first
-        # Example: CBT: 8, DBT: 2, Humanistic: 1, Others: 0
         sorted_scores = sorted(therapy_scores.items(), key=lambda x: x[1], reverse=True)
-        
         for therapy_name, score in sorted_scores:
             therapy_data = st.session_state.bot.therapy_types[therapy_name]
-            
-            # Visual indicators help users quickly understand results:
-            # ✅ = therapy matched (score > 0)
-            # ⭕ = therapy didn't match (score = 0)
             if score > 0:
                 st.write(f"✅ **{therapy_data['name']}:** {score} matches")
             else:
                 st.write(f"⭕ **{therapy_data['name']}:** {score} matches")
 
-    # Resource recommendations
     st.subheader("🔗 Where to Find Help")
     resources = st.session_state.bot.get_resources_for_user(st.session_state.user_answers)
 
@@ -980,7 +685,6 @@ def show_assessment_results():
                 st.write(f"**Type:** {resource['type']}")
         st.markdown("---")
 
-    # Next steps
     st.subheader("→ Next Steps")
     st.write("""
     1. **Review** the therapy type recommendation above
@@ -990,7 +694,6 @@ def show_assessment_results():
     5. **Don't give up** - help is available!
     """)
 
-    # Reset button
     if st.button("↻ Take Assessment Again"):
         st.session_state.assessment_started = False
         st.session_state.current_question = 0
@@ -1026,7 +729,6 @@ def show_therapy_types_page():
     st.header("💭 Types of Therapy")
     st.write("Learn about different therapeutic approaches and what they help with.")
 
-    # Create tabs for each therapy type
     therapy_names = list(st.session_state.bot.therapy_types.keys())
     tabs = st.tabs([st.session_state.bot.therapy_types[name]['name'] for name in therapy_names])
 
@@ -1047,11 +749,9 @@ def show_resources_page():
     st.header("🔗 Mental Health Resources")
     st.write("Browse all available resources for mental health support.")
 
-    # Filter options
     resource_types = ['All'] + list(set([r['type'] for r in st.session_state.bot.professional_resources.values()]))
     selected_type = st.selectbox("Filter by type:", resource_types)
 
-    # Display resources
     for resource_name, resource in st.session_state.bot.professional_resources.items():
         if selected_type == 'All' or resource['type'] == selected_type:
             with st.container():
