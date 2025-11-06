@@ -2,7 +2,9 @@ import streamlit as st
 import time
 import re
 
-
+# --- 1. FULL, CORRECTED CSS BLOCK (Includes fix for overlapping elements) ---
+# This CSS implements the "Natural Harmony Design System" aesthetic and corrects 
+# the sidebar overlap issue reported on the deployed app.
 CSS_STYLE = """
 <style>
 
@@ -439,7 +441,7 @@ def score_response(response, scores):
         
         # Scoring Logic: 
         # 1. Check for exact phrase matches (gives higher score)
-        # 2. Check for individual word matches
+        # 2. Check for individual word match
 
         for keyword in data['keywords']:
             # 1. Exact phrase match (e.g., "core beliefs")
@@ -502,6 +504,7 @@ def troubleshooting_menu():
     """Displays the troubleshooting and session reset menu in the sidebar."""
     with st.expander("⚙️ Troubleshooting"):
         st.markdown("If the application is slow or visuals are broken, click below to clear the session state and restart.")
+        # Ensure emoji works for clear button
         if st.button("🗑️ Clear Session & Restart", key="reset_button"):
             reset_session()
             st.rerun()
@@ -509,6 +512,7 @@ def troubleshooting_menu():
 def sidebar_menu():
     """Displays the title and main actions in the sidebar."""
     with st.sidebar:
+        # Title with an emoji icon for reliability
         st.title("🧘‍♀️ Therapy Guide AI")
         st.markdown("""
         This tool uses a brief, 6-question chat to match your stated needs and preferences
@@ -518,11 +522,13 @@ def sidebar_menu():
         
         # Start/Reset Button
         if st.session_state.assessment_in_progress or st.session_state.show_results:
+            # Use 'Start' or 'Begin' language along with emoji for reliability
             if st.button("🔄 Start New Assessment", key="sidebar_reset"):
                 reset_session()
                 st.rerun()
         else:
-             st.button("Begin Assessment", key="sidebar_start", on_click=lambda: st.session_state.update(assessment_in_progress=True, current_question_index=0))
+             # Use 'Begin' language along with emoji for reliability
+             st.button("▶️ Begin Assessment", key="sidebar_start", on_click=lambda: st.session_state.update(assessment_in_progress=True, current_question_index=0))
 
         st.markdown("---")
         troubleshooting_menu()
