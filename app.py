@@ -1,7 +1,7 @@
 import streamlit as st
 from datetime import datetime
 import re
-from streamlit_option_menu import option_menu  # New import for better icons
+from streamlit_option_menu import option_menu  # Added for proper icons
 
 # Page configuration
 st.set_page_config(
@@ -14,6 +14,7 @@ st.set_page_config(
 # 🌿 NATURAL HARMONY DESIGN SYSTEM - COMPREHENSIVE CSS STYLING
 st.markdown("""
     <style>
+
     /* CSS VARIABLES */
     :root {
         --primary: #6A8C7E;
@@ -702,56 +703,56 @@ def main():
     # Important disclaimer
     st.error("⚠️ **IMPORTANT:** This tool is for educational purposes only and is not a replacement for professional mental health care. If you're in crisis, please seek immediate help.")
 
-    # Sidebar with navigation using option_menu
-    with st.sidebar:
-        st.title("Navigation")
-        
-        # Crisis button (always visible)
-        if st.button("⚠️ Crisis Help - Get Help Now", key="crisis_btn"):
-            st.error(st.session_state.bot.get_crisis_help())
-        
-        st.markdown("---")
-        
-        # Main navigation - REPLACED with option_menu for better icons
-        if not st.session_state.assessment_started:
+    # Sidebar with navigation
+    st.sidebar.title("Navigation")
+
+    # Crisis button (always visible)
+    if st.sidebar.button("⚠️ Crisis Help - Get Help Now"):
+        st.error(st.session_state.bot.get_crisis_help())
+
+    st.sidebar.markdown("---")
+    
+    # Debug / Clear session button
+    with st.sidebar.expander("⚙️ Troubleshooting"):
+        st.write("Having issues? Try clearing the session:")
+        if st.button("🗑️ Clear Session & Restart"):
+            for key in list(st.session_state.keys()):
+                del st.session_state[key]
+            st.rerun()
+
+    # Main navigation - ONLY CHANGED PART: Using option_menu for better icons
+    if not st.session_state.assessment_started:
+        with st.sidebar:
             selected = option_menu(
                 menu_title=None,
                 options=["Home", "Crisis Resources", "Learn About Therapy", "Find Resources"],
-                icons=["house", "exclamation-triangle", "book", "link"],  # Bootstrap icons
+                icons=["house", "exclamation-triangle", "book", "link"],
                 default_index=0,
             )
             
-            if selected == "Home":
-                show_home_page()
-            elif selected == "Crisis Resources":
-                show_crisis_page()
-            elif selected == "Learn About Therapy":
-                show_therapy_types_page()
-            elif selected == "Find Resources":
-                show_resources_page()
-        else:
-            # Assessment is active
-            st.write("✍️ **Assessment in Progress**")
-            if st.button("↻ Start Over"):
-                st.session_state.assessment_started = False
-                st.session_state.current_question = 0
-                st.session_state.user_answers = []
-                st.session_state.show_results = False
-                st.rerun()
+        # Now use the selected value to determine which page to show
+        if selected == "Home":
+            show_home_page()
+        elif selected == "Crisis Resources":
+            show_crisis_page()
+        elif selected == "Learn About Therapy":
+            show_therapy_types_page()
+        elif selected == "Find Resources":
+            show_resources_page()
+    else:
+        # Assessment is active
+        st.sidebar.write("✍️ **Assessment in Progress**")
+        if st.sidebar.button("↻ Start Over"):
+            st.session_state.assessment_started = False
+            st.session_state.current_question = 0
+            st.session_state.user_answers = []
+            st.session_state.show_results = False
+            st.rerun()
 
-            if st.session_state.show_results:
-                show_assessment_results()
-            else:
-                show_assessment_page()
-                
-        # Debug / Clear session button
-        st.markdown("---")
-        with st.expander("⚙️ Troubleshooting"):
-            st.write("Having issues? Try clearing the session:")
-            if st.button("🗑️ Clear Session & Restart"):
-                for key in list(st.session_state.keys()):
-                    del st.session_state[key]
-                st.rerun()
+        if st.session_state.show_results:
+            show_assessment_results()
+        else:
+            show_assessment_page()
 
 def show_home_page():
     """Show the home page"""
@@ -1004,7 +1005,7 @@ def show_therapy_types_page():
 
             st.subheader(therapy_info['name'])
             st.write(f"**Description:** {therapy_info['description']}")
-            st.write(f"**Good for:** {', '.join(therapy_info['good_for'][:5])}...") # Show just a few examples
+            st.write(f"**Good for:** {', '.join(therapy_info['good_for'])}")
             st.write(f"**Example:** {therapy_info['example']}")
             st.write(f"**Duration:** {therapy_info['duration']}")
             st.write(f"**Effectiveness:** {therapy_info['effectiveness']}")
