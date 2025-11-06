@@ -1,6 +1,7 @@
 import streamlit as st
 from datetime import datetime
 import re
+from streamlit_option_menu import option_menu  # Added for proper icons
 
 # Page configuration
 st.set_page_config(
@@ -388,6 +389,24 @@ st.markdown("""
     div[class*="Error"] {
         border-left: 5px solid #C4A055 !important;
     }
+
+    /* OPTION MENU STYLING - FIX STYLING ISSUES */
+    .nav-link {
+        text-align: left !important;
+        padding: 0.5rem 1rem !important;
+        border-radius: 6px !important;
+        margin-bottom: 0.5rem !important;
+        transition: all 0.2s ease !important;
+    }
+    .nav-link.active {
+        background-color: var(--primary) !important;
+        color: white !important;
+        font-weight: 500 !important;
+    }
+    .nav-link:hover {
+        background-color: var(--bg-hover) !important;
+        color: var(--primary-dark) !important;
+    }
     </style>
 """, unsafe_allow_html=True)
 
@@ -694,8 +713,6 @@ def main():
         st.session_state.assessment_started = False
     if 'show_results' not in st.session_state:
         st.session_state.show_results = False
-    if 'current_page' not in st.session_state:
-        st.session_state.current_page = "Home"
 
     # Header
     st.title("🌱 Therapy Guide")
@@ -712,33 +729,49 @@ def main():
         st.error(st.session_state.bot.get_crisis_help())
 
     st.sidebar.markdown("---")
+    
+    # Debug / Clear session button
+    with st.sidebar.expander("⚙️ Troubleshooting"):
+        st.write("Having issues? Try clearing the session:")
+        if st.button("🗑️ Clear Session & Restart"):
+            for key in list(st.session_state.keys()):
+                del st.session_state[key]
+            st.rerun()
 
-    # Main navigation - Using normal buttons with emojis instead of text icons
+    # Main navigation - ONLY CHANGED PART: Using option_menu for better icons
     if not st.session_state.assessment_started:
-        if st.sidebar.button("🏠 Home"):
-            st.session_state.current_page = "Home"
-            st.rerun()
-        
-        if st.sidebar.button("⚠️ Crisis Resources"):
-            st.session_state.current_page = "Crisis"
-            st.rerun()
-        
-        if st.sidebar.button("📚 Learn About Therapy"):
-            st.session_state.current_page = "Therapy"
-            st.rerun()
-        
-        if st.sidebar.button("🔗 Find Resources"):
-            st.session_state.current_page = "Resources"
-            st.rerun()
-        
+        with st.sidebar:
+            selected = option_menu(
+                menu_title=None,
+                options=["Home", "Crisis Resources", "Learn About Therapy", "Find Resources"],
+                icons=["house", "exclamation-triangle", "book", "link"],
+                default_index=0,
+                orientation="vertical",
+                styles={
+                    "container": {"padding": "0!important"},
+                    "icon": {"font-size": "1rem", "margin-right": "8px"},
+                    "nav-link": {
+                        "font-size": "0.9375rem",
+                        "text-align": "left",
+                        "margin": "0px",
+                        "padding": "0.625rem 1.25rem",
+                        "--hover-color": "#E0E8E4"
+                    },
+                    "nav-link-selected": {
+                        "background-color": "#6A8C7E",
+                        "font-weight": "500"
+                    }
+                }
+            )
+            
         # Show the selected page
-        if st.session_state.current_page == "Home":
+        if selected == "Home":
             show_home_page()
-        elif st.session_state.current_page == "Crisis":
+        elif selected == "Crisis Resources":
             show_crisis_page()
-        elif st.session_state.current_page == "Therapy":
+        elif selected == "Learn About Therapy":
             show_therapy_types_page()
-        elif st.session_state.current_page == "Resources":
+        elif selected == "Find Resources":
             show_resources_page()
     else:
         # Assessment is active
@@ -754,15 +787,6 @@ def main():
             show_assessment_results()
         else:
             show_assessment_page()
-    
-    # Debug / Clear session button
-    st.sidebar.markdown("---")
-    with st.sidebar.expander("⚙️ Troubleshooting"):
-        st.write("Having issues? Try clearing the session:")
-        if st.button("🗑️ Clear Session & Restart"):
-            for key in list(st.session_state.keys()):
-                del st.session_state[key]
-            st.rerun()
 
 def show_home_page():
     """Show the home page"""
@@ -1047,3 +1071,9 @@ def show_resources_page():
 
 if __name__ == "__main__":
     main()
+```
+
+Also include this `requirements.txt` file:
+```
+streamlit==1.28.0
+streamlit-option-menu==0.3.2
