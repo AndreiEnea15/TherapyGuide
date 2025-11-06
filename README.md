@@ -22,6 +22,7 @@ git clone https://github.com/AndreiEnea15/TherapyGuide.git
 cd TherapyGuide
 pip install -r requirements.txt
 streamlit run app.py
+
 🔄 Recent Updates (Version 3.0)
 Major Additions by Andrei Enea
 
