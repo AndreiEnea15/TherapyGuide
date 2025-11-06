@@ -14,7 +14,6 @@ st.set_page_config(
 # 🌿 NATURAL HARMONY DESIGN SYSTEM - COMPREHENSIVE CSS STYLING
 st.markdown("""
     <style>
-
     /* CSS VARIABLES */
     :root {
         --primary: #6A8C7E;
@@ -738,7 +737,7 @@ def main():
                 del st.session_state[key]
             st.rerun()
 
-    # Main navigation - ONLY CHANGED PART: Using option_menu for better icons
+    # Main navigation with option_menu for proper icons
     if not st.session_state.assessment_started:
         with st.sidebar:
             selected = option_menu(
@@ -746,7 +745,6 @@ def main():
                 options=["Home", "Crisis Resources", "Learn About Therapy", "Find Resources"],
                 icons=["house", "exclamation-triangle", "book", "link"],
                 default_index=0,
-                orientation="vertical",
                 styles={
                     "container": {"padding": "0!important"},
                     "icon": {"font-size": "1rem", "margin-right": "8px"},
@@ -763,7 +761,7 @@ def main():
                     }
                 }
             )
-            
+        
         # Show the selected page
         if selected == "Home":
             show_home_page()
@@ -1073,7 +1071,7 @@ if __name__ == "__main__":
     main()
 ```
 
-Also include this `requirements.txt` file:
+Don't forget to create a `requirements.txt` file with:
 ```
 streamlit==1.28.0
 streamlit-option-menu==0.3.2
