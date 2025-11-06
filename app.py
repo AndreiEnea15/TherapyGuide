@@ -342,6 +342,13 @@ class TherapyBotGuide:
                 'cost': 'Varies by therapist ($80-200+ per session)',
                 'type': 'Directory'
             },
+            'Psychology_Today_Canada': {
+                'website': 'psychologytoday.com/ca/therapists',
+                'description': 'Find Canadian therapists with photos, specialties, and reviews',
+                'good_for': 'Finding Canadian therapists',
+                'cost': 'Varies by therapist (CAD $100-250+ per session)',
+                'type': 'Directory'
+            },
             'BetterHelp': {
                 'website': 'betterhelp.com',
                 'description': 'Online therapy through video, phone, or text messaging',
@@ -356,6 +363,13 @@ class TherapyBotGuide:
                 'cost': '$69-109 per week',
                 'type': 'Online Platform'
             },
+            'Inkblot_Therapy': {
+                'website': 'inkblottherapy.com',
+                'description': 'Canadian online therapy platform with video counselling',
+                'good_for': 'Online therapy in Canada',
+                'cost': 'CAD $100-140 per session or covered by insurance',
+                'type': 'Online Platform'
+            },
             'Open_Path': {
                 'website': 'openpathcollective.org',
                 'description': 'Affordable therapy sessions with sliding scale fees',
@@ -363,9 +377,16 @@ class TherapyBotGuide:
                 'cost': '$30-60 per session',
                 'type': 'Affordable Care'
             },
+            'Wellness_Together_Canada': {
+                'website': 'wellnesstogether.ca',
+                'description': 'Free mental health and substance use support for Canadians',
+                'good_for': 'Free Canadian mental health support',
+                'cost': 'Free',
+                'type': 'Government Resource'
+            },
             'Crisis_Text_Line': {
                 'website': 'crisistextline.org',
-                'phone': 'Text HOME to 741741',
+                'phone': 'Text HOME to 741741 (US) or CONNECT to 686868 (Canada)',
                 'description': '24/7 crisis support via text message - completely free',
                 'good_for': 'Immediate crisis support',
                 'cost': 'Free',
@@ -374,8 +395,8 @@ class TherapyBotGuide:
             'SAMHSA': {
                 'website': 'samhsa.gov/find-treatment',
                 'phone': '1-800-662-4357',
-                'description': 'Government treatment locator for mental health and substance abuse',
-                'good_for': 'Finding local treatment facilities',
+                'description': 'US Government treatment locator for mental health and substance abuse',
+                'good_for': 'Finding US treatment facilities',
                 'cost': 'Varies',
                 'type': 'Government Resource'
             }
@@ -398,10 +419,17 @@ class TherapyBotGuide:
 
         **If you're thinking about hurting yourself, please reach out RIGHT NOW:**
 
-        ☎️ **CALL: 988** (Suicide & Crisis Lifeline) - Available 24/7
-        💬 **TEXT: HOME to 741741** (Crisis Text Line)
-        🏥 **EMERGENCY: Call 911** or go to nearest emergency room
-        🌐 **CHAT: suicidepreventionlifeline.org** (Online chat available)
+        **🇺🇸 United States:**
+        - ☎️ **CALL/TEXT: 988** (Suicide & Crisis Lifeline) - 24/7
+        - 💬 **TEXT: HOME to 741741** (Crisis Text Line)
+        - 🌐 **CHAT: suicidepreventionlifeline.org**
+
+        **🇨🇦 Canada:**
+        - ☎️ **CALL/TEXT: 9-8-8** (Suicide Crisis Helpline) - 24/7
+        - 📱 **Kids Help Phone (ages 5-29): 1-800-668-6868 or Text CONNECT to 686868**
+        - 🌐 **Indigenous Hope for Wellness: 1-855-242-3310** (English, French, Cree, Ojibway, Inuktitut)
+
+        **🏥 EMERGENCY: Call 911 or go to nearest emergency room**
 
         **You are NOT alone. These feelings CAN change with help.**
         """
@@ -439,13 +467,25 @@ class TherapyBotGuide:
         recommended_resources = []
         user_text = ' '.join(user_preferences).lower()
 
+        # Check for Canadian location indicators
+        is_canada = any(word in user_text for word in ['canada', 'canadian', 'cad', 'ontario', 'quebec', 'british columbia', 'alberta'])
+
         if 'online' in user_text:
             recommended_resources.extend(['BetterHelp', 'Talkspace'])
+            if is_canada:
+                recommended_resources.append('Inkblot_Therapy')
 
         if any(word in user_text for word in ['cost', 'money', 'affordable', 'cheap', 'low-cost', 'sliding scale']):
             recommended_resources.append('Open_Path')
+            if is_canada:
+                recommended_resources.append('Wellness_Together_Canada')
 
-        recommended_resources.extend(['Psychology_Today', 'SAMHSA'])
+        # Add appropriate directories based on location
+        if is_canada:
+            recommended_resources.extend(['Psychology_Today_Canada', 'Wellness_Together_Canada'])
+        else:
+            recommended_resources.extend(['Psychology_Today', 'SAMHSA'])
+        
         recommended_resources.append('Crisis_Text_Line')
 
         seen = set()
@@ -565,10 +605,15 @@ def show_home_page():
     with col2:
         st.subheader("🆘 Need Immediate Help?")
         st.write("""
-        If you're having thoughts of self-harm or suicide:
-        - **Call 988** (Suicide & Crisis Lifeline)
-        - **Text HOME to 741741** (Crisis Text Line)
-        - **Call 911** for emergency services
+        **If you're having thoughts of self-harm or suicide:**
+        
+        🇺🇸 **US:** Call/Text **988**
+        
+        🇨🇦 **Canada:** Call/Text **9-8-8**
+        
+        📱 **Canada Youth (5-29):** **1-800-668-6868**
+        
+        🏥 **Emergency:** Call **911**
         """)
         if st.button("🆘 Get Crisis Resources"):
             st.error(st.session_state.bot.get_crisis_help())
@@ -577,11 +622,11 @@ def show_home_page():
     st.subheader("📌 Mental Health Facts")
     col1, col2, col3 = st.columns(3)
     with col1:
-        st.metric("Adults with Mental Illness", "1 in 5", "In the US annually")
+        st.metric("People with Mental Illness", "1 in 5", "Globally each year")
     with col2:
         st.metric("Therapy Effectiveness", "75%", "Show improvement")
     with col3:
-        st.metric("Crisis Line Response", "24/7", "Available support")
+        st.metric("Crisis Support", "24/7", "Available worldwide")
 
 def show_assessment_page():
     """Show the assessment questionnaire"""
@@ -706,10 +751,9 @@ def show_crisis_page():
     st.header("⚠️ Crisis Resources")
     st.error(st.session_state.bot.get_crisis_help())
 
-    st.subheader("☎️ Additional Crisis Resources")
-
-    crisis_resources = [
-        {"name": "National Suicide Prevention Lifeline", "contact": "988", "description": "24/7 crisis support"},
+    st.subheader("🇺🇸 United States Crisis Resources")
+    us_crisis_resources = [
+        {"name": "National Suicide Prevention Lifeline", "contact": "Call or Text 988", "description": "24/7 crisis support"},
         {"name": "Crisis Text Line", "contact": "Text HOME to 741741", "description": "24/7 text-based crisis support"},
         {"name": "SAMHSA National Helpline", "contact": "1-800-662-4357", "description": "Treatment referral service"},
         {"name": "National Domestic Violence Hotline", "contact": "1-800-799-7233", "description": "24/7 support for domestic violence"},
@@ -717,7 +761,23 @@ def show_crisis_page():
         {"name": "Veterans Crisis Line", "contact": "1-800-273-8255", "description": "24/7 support for veterans"}
     ]
 
-    for resource in crisis_resources:
+    for resource in us_crisis_resources:
+        with st.container():
+            st.markdown(f"**{resource['name']}**")
+            st.markdown(f"☎️ {resource['contact']}")
+            st.write(resource['description'])
+            st.markdown("---")
+
+    st.subheader("🇨🇦 Canadian Crisis Resources")
+    canada_crisis_resources = [
+        {"name": "9-8-8: Suicide Crisis Helpline", "contact": "Call or Text 9-8-8", "description": "24/7 for anyone thinking about suicide or worried about someone they know"},
+        {"name": "Kids Help Phone", "contact": "1-800-668-6868 or Text CONNECT to 686868", "description": "24/7 support for youth aged 5-29"},
+        {"name": "Hope for Wellness Help Line", "contact": "1-855-242-3310 or online chat", "description": "24/7 support for Indigenous peoples (English, French, Cree, Ojibway, Inuktitut)"},
+        {"name": "Talk Suicide Canada", "contact": "1-833-456-4566 or text 45645", "description": "24/7 suicide prevention and support"},
+        {"name": "Wellness Together Canada", "contact": "Visit wellnesstogether.ca", "description": "Free mental health and substance use support"}
+    ]
+
+    for resource in canada_crisis_resources:
         with st.container():
             st.markdown(f"**{resource['name']}**")
             st.markdown(f"☎️ {resource['contact']}")
