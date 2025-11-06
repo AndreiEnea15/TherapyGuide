@@ -14,7 +14,6 @@ st.set_page_config(
 # 🌿 NATURAL HARMONY DESIGN SYSTEM - COMPREHENSIVE CSS STYLING
 st.markdown("""
     <style>
-
     /* CSS VARIABLES */
     :root {
         --primary: #6A8C7E;
@@ -391,6 +390,7 @@ st.markdown("""
     }
     </style>
 """, unsafe_allow_html=True)
+
 class TherapyBotGuide:
     def __init__(self):
         """Initialize the bot with all its knowledge and capabilities"""
@@ -1004,7 +1004,7 @@ def show_therapy_types_page():
 
             st.subheader(therapy_info['name'])
             st.write(f"**Description:** {therapy_info['description']}")
-            st.write(f"**Good for:** {', '.join(therapy_info['good_for'])}")
+            st.write(f"**Good for:** {', '.join(therapy_info['good_for'][:5])}...") # Show just a few examples
             st.write(f"**Example:** {therapy_info['example']}")
             st.write(f"**Duration:** {therapy_info['duration']}")
             st.write(f"**Effectiveness:** {therapy_info['effectiveness']}")
@@ -1036,4 +1036,3 @@ def show_resources_page():
 
 if __name__ == "__main__":
     main()
-
