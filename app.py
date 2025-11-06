@@ -1,80 +1,7 @@
-# Therapy Bot Guide - Streamlit Web Application
-# Mental Health Support and Resource Finder
-
-"""
-🌱 IMPROVED THERAPY BOT WITH FLEXIBLE KEYWORD MATCHING
-
-📋 EXAMPLE OF HOW THE IMPROVED ALGORITHM WORKS:
-
-QUESTIONS (6 total):
-1. "What's been bothering you lately?"
-2. "How long have you been feeling this way?"
-3. "On a scale of 1-10, how intense are these feelings?"
-4. "Have you tried therapy before?"
-5. "Do you prefer online therapy or in-person?"
-6. "Do you have health insurance or need low-cost options?"
-
-USER ANSWERS:
-Q1: "I've been feeling really anxious and overthinking everything. 
-     I worry constantly and have negative thoughts racing through my mind."
-Q2: "About 6 months, since my breakup."
-Q3: "About 8 out of 10. It's affecting my work and sleep."
-Q4: "Never tried therapy, but meditation helped a little."
-Q5: "Online sessions preferred. Too anxious to leave the house."
-Q6: "Have insurance but need affordable options."
-
-OLD VERSION (❌ Problem):
-Combined text scanned for exact matches only:
-- CBT: 1 match (only exact "negative thoughts")
-- Exposure: 0 matches (keyword "anxiety" but user said "anxious")
-- Others: 0 matches ← Confusing! Why all zeros?
-
-NEW IMPROVED VERSION (✓ Better):
-Smart flexible matching:
-- CBT: 6 matches ✓
-  * "anxious" matches "anxiety" keyword +1
-  * "overthinking" exact match +1
-  * "worry" exact match +1
-  * "negative thoughts" exact match +2 (bonus!)
-  * "stress" (work) found +1
-  
-- Exposure: 3 matches ✓
-  * "anxious" exact match +1
-  * "worry" exact match +1
-  * "anxious leaving house" (avoidance) +1
-  
-- Mindfulness: 3 matches ✓
-  * "overthinking" +1
-  * "meditation" exact +1
-  * "calm" implied +1
-
-- Others: 0-2 matches each
-
-🎯 RESULT: CBT (6 points) recommended with clear scoring breakdown!
-
-KEY IMPROVEMENTS:
-✓ Exact phrase match = 2 points (high value)
-✓ Individual word match = 1 point (handles variations)
-✓ "anxious" correctly matches keyword "anxiety"
-✓ "stressed" correctly matches keyword "stress"
-✓ Word filter > 2 chars (avoids "is", "it", "to" false positives)
-✓ ALL 6 therapy types scored (never confusing zeros)
-✓ Scores sorted highest to lowest
-
-MATCHING ALGORITHM:
-1. Combine all 6 user answers into lowercase text
-2. Split into individual words for flexible matching
-3. For each therapy keyword:
-   - Exact phrase match FIRST → +2 points (e.g., "negative thoughts")
-   - Individual word match → +1 point (e.g., "anxious" for "anxiety")
-4. Calculate total score for each therapy
-5. Recommend highest scoring therapy (random tie-breaker)
-6. Display ALL scores ranked highest to lowest
-"""
-
 import streamlit as st
 from datetime import datetime
 import re
+from streamlit_option_menu import option_menu  # New import for better icons
 
 # Page configuration
 st.set_page_config(
@@ -775,54 +702,56 @@ def main():
     # Important disclaimer
     st.error("⚠️ **IMPORTANT:** This tool is for educational purposes only and is not a replacement for professional mental health care. If you're in crisis, please seek immediate help.")
 
-    # Sidebar with navigation
-    st.sidebar.title("Navigation")
-
-    # Crisis button (always visible)
-    if st.sidebar.button("⚠️ Crisis Help - Get Help Now"):
-        st.error(st.session_state.bot.get_crisis_help())
-
-    st.sidebar.markdown("---")
-    
-    # Debug / Clear session button
-    with st.sidebar.expander("⚙️ Troubleshooting"):
-        st.write("Having issues? Try clearing the session:")
-        if st.button("🗑️ Clear Session & Restart"):
-            for key in list(st.session_state.keys()):
-                del st.session_state[key]
-            st.rerun()
-
-    st.sidebar.markdown("---")
-
-    # Main navigation
-    if not st.session_state.assessment_started:
-        page = st.sidebar.selectbox(
-            "Choose an option:",
-            ["🏡 Home", "⚠️ Crisis Resources", "💭 Learn About Therapy", "🔗 Find Resources"]
-        )
-
-        if page == "🏡 Home":
-            show_home_page()
-        elif page == "⚠️ Crisis Resources":
-            show_crisis_page()
-        elif page == "💭 Learn About Therapy":
-            show_therapy_types_page()
-        elif page == "🔗 Find Resources":
-            show_resources_page()
-    else:
-        # Assessment is active
-        st.sidebar.write("✍️ **Assessment in Progress**")
-        if st.sidebar.button("↻ Start Over"):
-            st.session_state.assessment_started = False
-            st.session_state.current_question = 0
-            st.session_state.user_answers = []
-            st.session_state.show_results = False
-            st.rerun()
-
-        if st.session_state.show_results:
-            show_assessment_results()
+    # Sidebar with navigation using option_menu
+    with st.sidebar:
+        st.title("Navigation")
+        
+        # Crisis button (always visible)
+        if st.button("⚠️ Crisis Help - Get Help Now", key="crisis_btn"):
+            st.error(st.session_state.bot.get_crisis_help())
+        
+        st.markdown("---")
+        
+        # Main navigation - REPLACED with option_menu for better icons
+        if not st.session_state.assessment_started:
+            selected = option_menu(
+                menu_title=None,
+                options=["Home", "Crisis Resources", "Learn About Therapy", "Find Resources"],
+                icons=["house", "exclamation-triangle", "book", "link"],  # Bootstrap icons
+                default_index=0,
+            )
+            
+            if selected == "Home":
+                show_home_page()
+            elif selected == "Crisis Resources":
+                show_crisis_page()
+            elif selected == "Learn About Therapy":
+                show_therapy_types_page()
+            elif selected == "Find Resources":
+                show_resources_page()
         else:
-            show_assessment_page()
+            # Assessment is active
+            st.write("✍️ **Assessment in Progress**")
+            if st.button("↻ Start Over"):
+                st.session_state.assessment_started = False
+                st.session_state.current_question = 0
+                st.session_state.user_answers = []
+                st.session_state.show_results = False
+                st.rerun()
+
+            if st.session_state.show_results:
+                show_assessment_results()
+            else:
+                show_assessment_page()
+                
+        # Debug / Clear session button
+        st.markdown("---")
+        with st.expander("⚙️ Troubleshooting"):
+            st.write("Having issues? Try clearing the session:")
+            if st.button("🗑️ Clear Session & Restart"):
+                for key in list(st.session_state.keys()):
+                    del st.session_state[key]
+                st.rerun()
 
 def show_home_page():
     """Show the home page"""
@@ -1107,3 +1036,11 @@ def show_resources_page():
 
 if __name__ == "__main__":
     main()
+```
+
+## Installation Requirements
+
+Create a `requirements.txt` file with:
+```
+streamlit==1.28.0
+streamlit-option-menu==0.3.2
