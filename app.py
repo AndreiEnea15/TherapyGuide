@@ -1069,9 +1069,3 @@ def show_resources_page():
 
 if __name__ == "__main__":
     main()
-```
-
-Don't forget to create a `requirements.txt` file with:
-```
-streamlit==1.28.0
-streamlit-option-menu==0.3.2
