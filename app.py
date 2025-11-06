@@ -1,7 +1,6 @@
 import streamlit as st
 from datetime import datetime
 import re
-from streamlit_option_menu import option_menu  # Added for proper icons
 
 # Page configuration
 st.set_page_config(
@@ -695,6 +694,8 @@ def main():
         st.session_state.assessment_started = False
     if 'show_results' not in st.session_state:
         st.session_state.show_results = False
+    if 'current_page' not in st.session_state:
+        st.session_state.current_page = "Home"
 
     # Header
     st.title("🌱 Therapy Guide")
@@ -711,33 +712,33 @@ def main():
         st.error(st.session_state.bot.get_crisis_help())
 
     st.sidebar.markdown("---")
-    
-    # Debug / Clear session button
-    with st.sidebar.expander("⚙️ Troubleshooting"):
-        st.write("Having issues? Try clearing the session:")
-        if st.button("🗑️ Clear Session & Restart"):
-            for key in list(st.session_state.keys()):
-                del st.session_state[key]
-            st.rerun()
 
-    # Main navigation - ONLY CHANGED PART: Using option_menu for better icons
+    # Main navigation - Using normal buttons with emojis instead of text icons
     if not st.session_state.assessment_started:
-        with st.sidebar:
-            selected = option_menu(
-                menu_title=None,
-                options=["Home", "Crisis Resources", "Learn About Therapy", "Find Resources"],
-                icons=["house", "exclamation-triangle", "book", "link"],
-                default_index=0,
-            )
-            
-        # Now use the selected value to determine which page to show
-        if selected == "Home":
+        if st.sidebar.button("🏠 Home"):
+            st.session_state.current_page = "Home"
+            st.rerun()
+        
+        if st.sidebar.button("⚠️ Crisis Resources"):
+            st.session_state.current_page = "Crisis"
+            st.rerun()
+        
+        if st.sidebar.button("📚 Learn About Therapy"):
+            st.session_state.current_page = "Therapy"
+            st.rerun()
+        
+        if st.sidebar.button("🔗 Find Resources"):
+            st.session_state.current_page = "Resources"
+            st.rerun()
+        
+        # Show the selected page
+        if st.session_state.current_page == "Home":
             show_home_page()
-        elif selected == "Crisis Resources":
+        elif st.session_state.current_page == "Crisis":
             show_crisis_page()
-        elif selected == "Learn About Therapy":
+        elif st.session_state.current_page == "Therapy":
             show_therapy_types_page()
-        elif selected == "Find Resources":
+        elif st.session_state.current_page == "Resources":
             show_resources_page()
     else:
         # Assessment is active
@@ -753,6 +754,15 @@ def main():
             show_assessment_results()
         else:
             show_assessment_page()
+    
+    # Debug / Clear session button
+    st.sidebar.markdown("---")
+    with st.sidebar.expander("⚙️ Troubleshooting"):
+        st.write("Having issues? Try clearing the session:")
+        if st.button("🗑️ Clear Session & Restart"):
+            for key in list(st.session_state.keys()):
+                del st.session_state[key]
+            st.rerun()
 
 def show_home_page():
     """Show the home page"""
