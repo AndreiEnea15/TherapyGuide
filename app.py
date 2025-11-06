@@ -1036,11 +1036,4 @@ def show_resources_page():
 
 if __name__ == "__main__":
     main()
-```
 
-## Installation Requirements
-
-Create a `requirements.txt` file with:
-```
-streamlit==1.28.0
-streamlit-option-menu==0.3.2
