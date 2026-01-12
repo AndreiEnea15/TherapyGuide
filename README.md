@@ -1,5 +1,6 @@
 🌱 Therapy Guide – Streamlit Web App (Version 3.0)
 A supportive chatbot designed to help users explore therapy options and mental health resources. Built with Streamlit by Andrei Enea.
+Live Demo: therapyguide.streamlit.app
 
 🧠 Features
 Interactive chat-based mental health assessment
